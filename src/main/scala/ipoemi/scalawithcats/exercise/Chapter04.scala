@@ -112,6 +112,7 @@ object `4.9.3` {
 
   type CalcState[A] = State[List[Int], A]
 
+  /*
   def evalOne(sym: String): CalcState[Int] = sym match {
     case "+" =>
       State[List[Int], Int] { oldStack =>
@@ -153,8 +154,26 @@ object `4.9.3` {
         (newStack, result)
       }
   }
+  */
+  def evalOne(sym: String): CalcState[Int] = sym match {
+    case "+" => operator(_ + _)
+    case "-" => operator(_ - _)
+    case "*" => operator(_ * _)
+    case "/" => operator(_ / _)
+    case num => operand(num)
+  }
+
+  def operator(func: (Int, Int) => Int): CalcState[Int] =
+    State[List[Int], Int] {
+      case x :: y :: stack => (func(x, y) :: stack, func(x, y))
+      case _ => sys.exit(1)
+    }
+
+  def operand(num: String): CalcState[Int] =
+    State[List[Int], Int](x => (num.toInt :: x, num.toInt))
 
   def evalAll(input: List[String]): CalcState[Int] =
-    input.tail.foldLeft(evalOne(input.head))((state, sym) => state.flatMap(x => evalOne(sym)))
+    //input.tail.foldLeft(evalOne(input.head))((state, sym) => state.flatMap(x => evalOne(sym)))
+    input.foldLeft(0.pure[CalcState])((state, sym) => state.flatMap(x => evalOne(sym)))
 }
 
