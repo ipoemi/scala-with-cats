@@ -107,6 +107,54 @@ object `4.8.3` {
 }
 
 object `4.9.3` {
+  import cats.data.State
+  import cats.syntax.applicative._
 
+  type CalcState[A] = State[List[Int], A]
+
+  def evalOne(sym: String): CalcState[Int] = sym match {
+    case "+" =>
+      State[List[Int], Int] { oldStack =>
+        val x = oldStack.head
+        val y = oldStack.tail.head
+        val result = x + y
+        val newStack = result :: oldStack.tail.tail
+        (newStack, result)
+      }
+    case "-" =>
+      State[List[Int], Int] { oldStack =>
+        val x = oldStack.head
+        val y = oldStack.tail.head
+        val result = x - y
+        val newStack = result :: oldStack.tail.tail
+        (newStack, result)
+      }
+    case "*" =>
+      State[List[Int], Int] { oldStack =>
+        val x = oldStack.head
+        val y = oldStack.tail.head
+        val result = x * y
+        val newStack = result :: oldStack.tail.tail
+        (newStack, result)
+      }
+    case "/" =>
+      State[List[Int], Int] { oldStack =>
+        val x = oldStack.head
+        val y = oldStack.tail.head
+        val result = x / y
+        val newStack = result :: oldStack.tail.tail
+        (newStack, result)
+      }
+    case numStr =>
+      State[List[Int], Int] { oldStack =>
+        var num = numStr.toInt
+        val newStack = num :: oldStack
+        val result = num
+        (newStack, result)
+      }
+  }
+
+  def evalAll(input: List[String]): CalcState[Int] =
+    input.tail.foldLeft(evalOne(input.head))((state, sym) => state.flatMap(x => evalOne(sym)))
 }
 
