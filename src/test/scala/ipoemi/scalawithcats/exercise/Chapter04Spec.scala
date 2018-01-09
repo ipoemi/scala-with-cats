@@ -135,4 +135,41 @@ class Chapter04Spec extends WordSpec with Matchers {
     }
 
   }
+
+  "4.10.1 Exercise: Branching out Further with Monads" should {
+    import `4.10.1`._
+    import cats._, cats.implicits._
+
+    "return branch(branch(leaf(2), leaf(4)), branch(leaf(3), leaf(6))) for the following" in {
+      branch(leaf(2), leaf(3)).flatMap(x => branch(leaf(x), leaf(x * 2))) shouldBe
+        branch(branch(leaf(2), leaf(4)), branch(leaf(3), leaf(6)))
+    }
+
+    "return branch(branch(leaf(99),leaf(101)),branch(leaf(199),leaf(201)))" in {
+      branch(leaf(100), leaf(200)).flatMap(x => branch(leaf(x - 1), leaf(x + 1))) shouldBe
+        branch(branch(leaf(99), leaf(101)), branch(leaf(199), leaf(201)))
+    }
+
+    """
+      |return
+      |  Branch(
+      |    Branch(
+      |      Branch(Leaf(89),Leaf(91)),
+      |      Branch(Leaf(109),Leaf(111))),
+      |    Branch(
+      |      Branch(Leaf(189),Leaf(191)),
+      |      Branch(Leaf(209),Leaf(211))))
+    """.stripMargin in {
+      var result = for {
+        a <- branch(leaf(100), leaf(200))
+        b <- branch(leaf(a - 10), leaf(a + 10))
+        c <- branch(leaf(b - 1), leaf(b + 1))
+      } yield c
+
+      result shouldBe
+        branch(branch(branch(leaf(89), leaf(91)),
+          branch(leaf(109), leaf(111))), branch(branch(leaf(189), leaf(191)),
+          branch(leaf(209), leaf(211))))
+    }
+  }
 }
