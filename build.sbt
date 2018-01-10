@@ -28,10 +28,10 @@ lazy val commonSettings = List(
     "utf-8", // Specify character encoding used by source files.
     //"-explaintypes", // Explain type errors in more detail.
     "-feature", // Emit warning and location for usages of features that should be imported explicitly.
-    //"-language:existentials", // Existential types (besides wildcard types) can be written and inferred
-    //"-language:higherKinds", // Allow higher-kinded types
-    //"-language:implicitConversions", // Allow definition of implicit functions called views
-    //"-language:postfixOps", // Allow post fix operations
+    "-language:existentials", // Existential types (besides wildcard types) can be written and inferred
+    "-language:higherKinds", // Allow higher-kinded types
+    "-language:implicitConversions", // Allow definition of implicit functions called views
+    "-language:postfixOps", // Allow post fix operations
     "-unchecked", // Enable additional warnings where generated code depends on assumptions.
     //"-Xcheckinit", // Wrap field accessors to throw an exception on uninitialized access.
     "-Xfatal-warnings", // Fail the compilation if there are any warnings.
